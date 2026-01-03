@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: bank-demo-was
+logging:
+  level:
+    root: info
+    web: info
+    bank.common: debug
+    bank.was: debug
+bank:
+  demo:
+    running-mode: local
+thekey:
+  framework:
+    core:
+      enabled: true
+      pipeline:
+        input-order:
+          - request-logging
+          - token-validation
+          - xss-validation
+          - e2e-stage
+        output-order:
+          - token-make
+          - response-logging
+      stages:
+        request-logging:
+          enabled: true
+          order: 1100
+          condition: ""
+          failure-policy: FAIL_OPEN
+        token-validation:
+          enabled: true
+          order: 1200
+          condition: ""
+          failure-policy: FAIL_CLOSE
+        xss-validation:
+          enabled: true
+          order: 1300
+          condition: ""
+          failure-policy: FAIL_CLOSE
+        e2e-stage:
+          enabled: true
+          order: 1400
+          condition: ""
+          failure-policy: FAIL_CLOSE
+        token-make:
+          enabled: true
+          order: 9100
+          condition: ""
+          failure-policy: FAIL_CLOSE
+        response-logging:
+          enabled: true
+          order: 9200
+          condition: ""
+          failure-policy: FAIL_OPEN
+    web:
+      enabled: true
+      session-key:
+        enabled: true
+        keys:
+          - token
