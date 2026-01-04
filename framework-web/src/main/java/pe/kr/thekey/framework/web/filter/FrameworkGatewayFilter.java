@@ -81,11 +81,22 @@ public class FrameworkGatewayFilter extends OncePerRequestFilter {
         private final AttributeBag bag;
 
         DefaultStageContext(ThekeyHttpServletRequest req, ThekeyHttpServletResponse res, RequestContext rc, AttributeBag bag) {
-            this.req = req; this.res = res; this.rc = rc; this.bag = bag;
+            this.req = req;
+            this.res = res;
+            this.rc = rc;
+            this.bag = bag;
         }
+
+        @Override
         public ThekeyHttpServletRequest request() { return req; }
+
+        @Override
         public ThekeyHttpServletResponse response() { return res; }
+
+        @Override
         public RequestContext requestContext() { return rc; }
+
+        @Override
         public AttributeBag attributes() { return bag; }
     }
 }
