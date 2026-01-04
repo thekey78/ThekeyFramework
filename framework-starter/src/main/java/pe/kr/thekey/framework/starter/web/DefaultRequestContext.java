@@ -11,6 +11,7 @@ public class DefaultRequestContext implements RequestContext {
     protected final ThekeyHttpServletRequest request;
     public DefaultRequestContext(ThekeyHttpServletRequest request) {
         this.request = request;
+        this.request.setAttribute("requestContext", this);
     }
 
     @Override

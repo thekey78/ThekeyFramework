@@ -1,8 +1,11 @@
 package pe.kr.thekey.framework.web.servlet.impl;
 
 import jakarta.servlet.http.*;
+import pe.kr.thekey.framework.core.error.StandardException;
 import pe.kr.thekey.framework.web.servlet.ThekeyHttpServletRequest;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 
 public class ThekeyHttpServletRequestWrapper extends HttpServletRequestWrapper implements ThekeyHttpServletRequest {
@@ -75,5 +78,26 @@ public class ThekeyHttpServletRequestWrapper extends HttpServletRequestWrapper i
     @Override
     public void removeAttribute(String name) {
         attributes.remove(name);
+    }
+
+    @Override
+    public String getRemoteAddr() {
+        String clientIp = super.getHeader("X-Forwarded-For");
+        if(clientIp == null || clientIp.isEmpty()) clientIp = super.getHeader("Proxy-Client-IP");
+        if(clientIp == null || clientIp.isEmpty()) clientIp = super.getHeader("WL-Proxy-Client-IP");
+        if(clientIp == null || clientIp.isEmpty()) clientIp = super.getHeader("HTTP_CLIENT_IP");
+        if(clientIp == null || clientIp.isEmpty()) clientIp = super.getHeader("HTTP_X_FORWARDED_FOR");
+        if(clientIp == null || clientIp.isEmpty()) clientIp = super.getHeader("REMOTE_ADDR");
+        if(clientIp == null || clientIp.isEmpty()) clientIp = super.getRemoteAddr();
+
+        if (clientIp.equals("0:0:0:0:0:0:0:1")) {
+            try {
+                InetAddress inetAddress = InetAddress.getLocalHost();
+                clientIp = inetAddress.getHostAddress();
+            } catch (UnknownHostException e) {
+                throw new StandardException("Unknown Host", e.getMessage(), e);
+            }
+        }
+        return clientIp;
     }
 }
