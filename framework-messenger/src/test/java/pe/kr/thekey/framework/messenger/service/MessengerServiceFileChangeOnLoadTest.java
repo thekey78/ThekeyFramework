@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
 @SpringBootTest(classes = {MessengerConfig.class, FrameworkCoreConfig.class}, properties = {"thekey.framework.messenger.file-change-on-load=true"})
@@ -58,7 +59,6 @@ public class MessengerServiceFileChangeOnLoadTest {
 
         Files.write(mappingFile, mappingContent.getBytes());
         Thread.sleep(2000);
-        Files.delete(mappingFile);
 
         MessageDto messageDto = new MessageDto();
         messageDto.setHeader(Map.of("id", "1234567890"));
@@ -66,5 +66,10 @@ public class MessengerServiceFileChangeOnLoadTest {
         messageDto.setFooter(Map.of("checksum", "12345"));
         String marshal = messengerService.marshal("dynamicStream", messageDto);
         assertEquals("1234567890Hello, World!       12345", marshal);
+
+        Files.delete(mappingFile);
+        Thread.sleep(2000);
+
+        assertThrows(IllegalArgumentException.class,  () -> messengerService.marshal("dynamicStream", messageDto));
     }
 }
