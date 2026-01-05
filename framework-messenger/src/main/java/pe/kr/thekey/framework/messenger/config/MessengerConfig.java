@@ -15,11 +15,8 @@ import pe.kr.thekey.framework.messenger.util.MessengerProperties;
 @EnableConfigurationProperties({MessengerProperties.class})
 @ConditionalOnProperty(prefix="thekey.framework.messenger", name="enable", havingValue="true", matchIfMissing=true)
 public class MessengerConfig {
-    private final MessengerProperties properties;
-    private final WatcherForDirectory watcherForDirectory;
-
     @Bean
-    public MessengerService messengerService() {
+    public MessengerService messengerService(MessengerProperties properties, WatcherForDirectory watcherForDirectory) {
         return new MessengerServiceImpl(properties, watcherForDirectory);
     }
 }
