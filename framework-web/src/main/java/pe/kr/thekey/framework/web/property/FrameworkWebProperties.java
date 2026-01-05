@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class FrameworkWebProperties {
     @Setter
-    private boolean enabled = true;
+    private boolean enable = true;
 
     @Setter
     private SessionKey sessionKey;
@@ -18,7 +18,7 @@ public class FrameworkWebProperties {
     @Getter
     @Setter
     public static class SessionKey {
-        private boolean enabled = false;
+        private boolean enable = false;
         private List<String> keys;
     }
 }

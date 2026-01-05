@@ -11,7 +11,7 @@ public final class PipelineExecutor {
     public void execute(List<ExecutableStage> chain, StageContext ctx) {
         for (ExecutableStage es : chain) {
             StageDefinition def = es.def();
-            if (!def.enabled()) continue;
+            if (!def.enable()) continue;
             if (!def.condition().matches(ctx)) continue;
 
             try {

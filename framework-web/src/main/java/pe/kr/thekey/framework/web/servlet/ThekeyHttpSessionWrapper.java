@@ -58,7 +58,7 @@ public class ThekeyHttpSessionWrapper implements HttpSession {
     public void setAttribute(String name, Object value) {
         if (value instanceof Serializable) {
             FrameworkWebProperties bean = ApplicationContextHolder.getApplicationContext().getBean(FrameworkWebProperties.class);
-            if (bean.getSessionKey().isEnabled()) {
+            if (bean.getSessionKey().isEnable()) {
                 if (bean.getSessionKey().getKeys().contains(name)) {
                     session.setAttribute(name, value);
                 }

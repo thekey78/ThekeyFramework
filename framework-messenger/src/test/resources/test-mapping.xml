@@ -1,0 +1,12 @@
+<beanio xmlns="http://www.beanio.org/2012/03"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+
+    <stream name="testStream" format="fixedlength">
+        <record name="testRecord" class="pe.kr.thekey.framework.messenger.dto.MessageDto">
+            <field name="header['id']" length="10" />
+            <field name="data['content']" length="20" />
+            <field name="footer['checksum']" length="5" />
+        </record>
+    </stream>
+</beanio>

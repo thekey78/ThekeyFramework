@@ -8,7 +8,7 @@ import pe.kr.thekey.framework.web.property.FrameworkWebProperties;
 
 @AutoConfiguration
 @EnableConfigurationProperties(FrameworkWebProperties.class)
-@ConditionalOnProperty(prefix="thekey.framework.web", name="enabled", havingValue="true", matchIfMissing=true)
+@ConditionalOnProperty(prefix="thekey.framework.web", name="enable", havingValue="true", matchIfMissing=true)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class WebConfiguration {
 }

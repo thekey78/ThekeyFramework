@@ -12,7 +12,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "thekey.framework.core")
 public class FrameworkCoreProperties {
     @Setter
-    private boolean enabled = true;
+    private boolean enable = true;
 
     private final Pipeline pipeline = new Pipeline();
 
@@ -30,7 +30,7 @@ public class FrameworkCoreProperties {
     @Setter
     @Getter
     public static class StageProps {
-        private boolean enabled = true;
+        private boolean enable = true;
         private int order = 1000;
         private String condition = ""; // DSL
         private String failurePolicy = "FAIL_CLOSED"; // FAIL_CLOSED|FAIL_OPEN

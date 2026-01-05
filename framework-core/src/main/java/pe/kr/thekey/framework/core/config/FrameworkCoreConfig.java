@@ -13,7 +13,7 @@ import pe.kr.thekey.framework.core.utils.file.WatcherForFile;
 
 @AutoConfiguration
 @EnableConfigurationProperties({FrameworkCoreProperties.class})
-@ConditionalOnProperty(prefix="thekey.framework.core", name="enabled", havingValue="true", matchIfMissing=true)
+@ConditionalOnProperty(prefix="thekey.framework.core", name="enable", havingValue="true", matchIfMissing=true)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class FrameworkCoreConfig {
     @Bean

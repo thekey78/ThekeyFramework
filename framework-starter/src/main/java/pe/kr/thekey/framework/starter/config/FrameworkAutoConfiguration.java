@@ -60,7 +60,7 @@ public class FrameworkAutoConfiguration {
             var cond = cc.compile(sp.getCondition());
             var fp = StageDefinition.FailurePolicy.valueOf(sp.getFailurePolicy());
 
-            defs.put(id, new StageDefinition(id, stage.phase(), sp.isEnabled(), sp.getOrder(), cond, fp));
+            defs.put(id, new StageDefinition(id, stage.phase(), sp.isEnable(), sp.getOrder(), cond, fp));
         }
         return defs;
     }

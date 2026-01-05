@@ -13,7 +13,7 @@ bank:
 thekey:
   framework:
     core:
-      enabled: true
+      enable: true
       pipeline:
         input-order:
           - request-logging
@@ -25,38 +25,38 @@ thekey:
           - response-logging
       stages:
         request-logging:
-          enabled: true
+          enable: true
           order: 1100
           condition: ""
           failure-policy: FAIL_OPEN
         token-validation:
-          enabled: true
+          enable: true
           order: 1200
           condition: ""
           failure-policy: FAIL_CLOSE
         xss-validation:
-          enabled: true
+          enable: true
           order: 1300
           condition: ""
           failure-policy: FAIL_CLOSE
         e2e-stage:
-          enabled: true
+          enable: true
           order: 1400
           condition: ""
           failure-policy: FAIL_CLOSE
         token-make:
-          enabled: true
+          enable: true
           order: 9100
           condition: ""
           failure-policy: FAIL_CLOSE
         response-logging:
-          enabled: true
+          enable: true
           order: 9200
           condition: ""
           failure-policy: FAIL_OPEN
     web:
-      enabled: true
+      enable: true
       session-key:
-        enabled: true
+        enable: true
         keys:
           - token

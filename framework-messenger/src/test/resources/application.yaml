@@ -1,0 +1,5 @@
+thekey:
+  framework:
+    messenger:
+      enable: true
+      file-encoding: UTF-8

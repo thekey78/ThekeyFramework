@@ -23,7 +23,7 @@ public class PipelineExecutorTest {
         Stage mockStage = mock(Stage.class);
         StageDefinition mockDefinition = mock(StageDefinition.class);
 
-        when(mockDefinition.enabled()).thenReturn(true);
+        when(mockDefinition.enable()).thenReturn(true);
         when(mockDefinition.condition()).thenReturn(mock(StageDefinition.Condition.class));
         when(mockDefinition.condition().matches(mockContext)).thenReturn(true);
 
@@ -50,7 +50,7 @@ public class PipelineExecutorTest {
         Stage mockStage = mock(Stage.class);
         StageDefinition mockDefinition = mock(StageDefinition.class);
 
-        when(mockDefinition.enabled()).thenReturn(false);
+        when(mockDefinition.enable()).thenReturn(false);
 
         ExecutableStage stage = new ExecutableStage(mockStage, mockDefinition);
         List<ExecutableStage> chain = List.of(stage);
@@ -75,7 +75,7 @@ public class PipelineExecutorTest {
         Stage mockStage = mock(Stage.class);
         StageDefinition mockDefinition = mock(StageDefinition.class);
 
-        when(mockDefinition.enabled()).thenReturn(true);
+        when(mockDefinition.enable()).thenReturn(true);
         when(mockDefinition.condition()).thenReturn(mock(StageDefinition.Condition.class));
         when(mockDefinition.condition().matches(mockContext)).thenReturn(false);
 
@@ -102,7 +102,7 @@ public class PipelineExecutorTest {
         Stage mockStage = mock(Stage.class);
         StageDefinition mockDefinition = mock(StageDefinition.class);
 
-        when(mockDefinition.enabled()).thenReturn(true);
+        when(mockDefinition.enable()).thenReturn(true);
         when(mockDefinition.condition()).thenReturn(mock(StageDefinition.Condition.class));
         when(mockDefinition.condition().matches(mockContext)).thenReturn(true);
         when(mockDefinition.failurePolicy()).thenReturn(StageDefinition.FailurePolicy.FAIL_OPEN);
@@ -129,7 +129,7 @@ public class PipelineExecutorTest {
         Stage mockStage = mock(Stage.class);
         StageDefinition mockDefinition = mock(StageDefinition.class);
 
-        when(mockDefinition.enabled()).thenReturn(true);
+        when(mockDefinition.enable()).thenReturn(true);
         when(mockDefinition.condition()).thenReturn(mock(StageDefinition.Condition.class));
         when(mockDefinition.condition().matches(mockContext)).thenReturn(true);
         when(mockDefinition.failurePolicy()).thenReturn(StageDefinition.FailurePolicy.FAIL_CLOSE);
@@ -159,7 +159,7 @@ public class PipelineExecutorTest {
         Stage mockStage = mock(Stage.class);
         StageDefinition mockDefinition = mock(StageDefinition.class);
 
-        when(mockDefinition.enabled()).thenReturn(true);
+        when(mockDefinition.enable()).thenReturn(true);
         when(mockDefinition.condition()).thenReturn(mock(StageDefinition.Condition.class));
         when(mockDefinition.condition().matches(mockContext)).thenReturn(true);
         when(mockDefinition.failurePolicy()).thenReturn(StageDefinition.FailurePolicy.FAIL_CLOSE);
