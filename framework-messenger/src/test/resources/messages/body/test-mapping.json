@@ -1,0 +1,17 @@
+[
+    {
+        "stream": {
+            "name": "testStream",
+            "format": "fixedlength",
+            "record": {
+                "name": "testRecord",
+                "class": "pe.kr.thekey.framework.messenger.dto.MessageDto",
+                "segment": [
+                    {"name":"header", "class":"map", "field": [{"name":"id", "length":"10"}]},
+                    {"name":"data", "class":"map", "field": [{"name":"content", "length":"20"}]},
+                    {"name":"footer", "class":"map", "field": [{"name":"checksum", "length":"3"}]}
+                ]
+            }
+        }
+    }
+]

@@ -1,0 +1,19 @@
+<beanio xmlns="http://www.beanio.org/2012/03"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+    <import resource="classpath:messages/common/common-include.xml"/>
+    <stream name="testStream" format="fixedlength">
+        <record name="testRecord" class="pe.kr.thekey.framework.messenger.dto.MessageDto">
+            <!-- Header 영역: MessageDto의 header(Map)에 매핑 -->
+            <include template="common-header"/>
+
+            <!-- Body 영역: MessageDto의 data(Map)에 매핑 -->
+            <segment name="data" class="map">
+                <field name="content" length="20" />
+            </segment>
+
+            <!-- Footer 영역: MessageDto의 footer(Map)에 매핑 -->
+            <include template="common-footer"/>
+        </record>
+    </stream>
+</beanio>

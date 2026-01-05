@@ -1,5 +1,15 @@
+spring:
+  application:
+    name: framework-messenger
+logging:
+  level:
+    root: info
+    pe.kr.thekey.framework.messenger: debug
 thekey:
   framework:
     messenger:
       enable: true
       file-encoding: UTF-8
+      file-change-on-load: true
+      mapping:
+        - "classpath*:messages/body/*.xml"

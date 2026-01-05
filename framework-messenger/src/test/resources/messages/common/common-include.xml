@@ -1,0 +1,17 @@
+<beanio xmlns="http://www.beanio.org/2012/03"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+    <!-- Header 영역: MessageDto의 header(Map)에 매핑 -->
+    <template name="common-header">
+        <segment name="header" class="map">
+            <field name="id" length="10"/>
+        </segment>
+    </template>
+
+    <!-- Footer 영역: MessageDto의 footer(Map)에 매핑 -->
+    <template name="common-footer">
+        <segment name="footer" class="map">
+            <field name="checksum" length="5"/>
+        </segment>
+    </template>
+</beanio>
