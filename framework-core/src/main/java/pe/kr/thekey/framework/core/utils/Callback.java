@@ -1,4 +1,4 @@
-package pe.kr.thekey.framework.core.utils.file;
+package pe.kr.thekey.framework.core.utils;
 
 @FunctionalInterface
 public interface Callback<Argument1, Argument2> {

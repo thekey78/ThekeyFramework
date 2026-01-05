@@ -3,6 +3,7 @@ package pe.kr.thekey.framework.core.utils.file;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import pe.kr.thekey.framework.core.utils.Callback;
 
 import java.io.File;
 import java.io.IOException;
