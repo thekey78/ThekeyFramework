@@ -1,6 +1,5 @@
 package pe.kr.thekey.framework.messenger.config;
 
-import org.beanio.StreamFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

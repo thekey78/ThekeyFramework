@@ -6,11 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import pe.kr.thekey.framework.messenger.dto.MessageDto;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +29,7 @@ public class MessengerServiceTest {
         String message = "ID00000001CONTENT             CHECK";
         Object result = messengerService.parse("testStream", message);
 
-        assertTrue(result instanceof MessageDto);
+        assertInstanceOf(MessageDto.class, result);
         MessageDto dto = (MessageDto) result;
 
         assertEquals("ID00000001", dto.getHeader().get("id"));
