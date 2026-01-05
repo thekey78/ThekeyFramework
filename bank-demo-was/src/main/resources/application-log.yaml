@@ -1,0 +1,6 @@
+logging:
+  level:
+    root: info
+    web: info
+    bank.common: debug
+    bank.was: debug
