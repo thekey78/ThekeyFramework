@@ -1,0 +1,11 @@
+thekey:
+  framework:
+    web:
+      enable: true
+      session-key:
+        enable: true
+        keys:
+          - token
+bank:
+  demo:
+    running-mode: local

@@ -1,0 +1,44 @@
+thekey:
+  framework:
+    core:
+      enable: true
+      pipeline:
+        input-order:
+          - request-logging
+          - token-validation
+          - xss-validation
+          - e2e-stage
+        output-order:
+          - token-make
+          - response-logging
+      stages:
+        request-logging:
+          enable: true
+          order: 1100
+          condition: ""
+          failure-policy: FAIL_OPEN
+        token-validation:
+          enable: true
+          order: 1200
+          condition: ""
+          failure-policy: FAIL_CLOSE
+        xss-validation:
+          enable: true
+          order: 1300
+          condition: ""
+          failure-policy: FAIL_CLOSE
+        e2e-stage:
+          enable: true
+          order: 1400
+          condition: ""
+          failure-policy: FAIL_CLOSE
+        token-make:
+          enable: true
+          order: 9100
+          condition: ""
+          failure-policy: FAIL_CLOSE
+        response-logging:
+          enable: true
+          order: 9200
+          condition: ""
+          failure-policy: FAIL_OPEN
