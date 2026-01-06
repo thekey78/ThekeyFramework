@@ -23,8 +23,13 @@ public class AdaptorProperties {
         private boolean enable;
         private boolean failover;
         private boolean loadBalance;
+        private boolean permanent;
+        private boolean async;
         private DataType dataType;
+        private ConnectType connectType;
         private List<HostInfo> hosts = new ArrayList<>();
+        private int receivePort;
+        private AsyncReceiveInfo asyncReceiveInfo;
     }
 
     @Data
@@ -35,8 +40,17 @@ public class AdaptorProperties {
         private int connectionTimeout = 5000;
         private int readTimeout = 60000;
         private int order = 0;
-        private boolean permanent;
-        private boolean async;
+    }
+
+    @Data
+    public static class AsyncReceiveInfo {
+        private boolean enable;
+        private String receiveWasId;
+        private ConnectType receiveConnectType;
+        private String receiveWasUrl;
+        private int port;
+        private int readTimeout = 60000;
+        private int order = 0;
     }
 
     public enum DataType {
@@ -49,6 +63,10 @@ public class AdaptorProperties {
         public boolean useMessenger() {
             return useMessenger(this);
         }
+    }
+
+    public enum ConnectType {
+        SOCKET, HTTP;
     }
 }
 

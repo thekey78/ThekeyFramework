@@ -1,4 +1,4 @@
-package pe.kr.thekey.framework.adaptor.service;
+package pe.kr.thekey.framework.adaptor;
 
 import pe.kr.thekey.framework.core.utils.Callback;
 

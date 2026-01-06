@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
-import pe.kr.thekey.framework.core.properties.FrameworkCoreProperties;
+import pe.kr.thekey.framework.core.utils.FrameworkCoreProperties;
 import pe.kr.thekey.framework.core.utils.ApplicationContextHolder;
 import pe.kr.thekey.framework.core.utils.file.WatcherForDirectory;
 import pe.kr.thekey.framework.core.utils.file.WatcherForFile;

@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import pe.kr.thekey.framework.core.properties.FrameworkCoreProperties;
+import pe.kr.thekey.framework.core.utils.FrameworkCoreProperties;
 import pe.kr.thekey.framework.core.utils.ApplicationContextHolder;
 import pe.kr.thekey.framework.web.property.FrameworkWebProperties;
 

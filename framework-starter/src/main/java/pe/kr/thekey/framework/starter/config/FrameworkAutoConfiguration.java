@@ -10,7 +10,7 @@ import pe.kr.thekey.framework.core.context.RequestContextFactory;
 import pe.kr.thekey.framework.core.context.RequestContextHolder;
 import pe.kr.thekey.framework.core.error.ErrorMapper;
 import pe.kr.thekey.framework.core.pipeline.Stage;
-import pe.kr.thekey.framework.core.properties.FrameworkCoreProperties;
+import pe.kr.thekey.framework.core.utils.FrameworkCoreProperties;
 import pe.kr.thekey.framework.starter.web.DefaultErrorMapper;
 import pe.kr.thekey.framework.starter.web.DefaultRequestContextFactory;
 import pe.kr.thekey.framework.starter.web.DefaultRequestContextHolder;

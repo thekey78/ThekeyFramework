@@ -1,4 +1,4 @@
-package pe.kr.thekey.framework.core.properties;
+package pe.kr.thekey.framework.core.utils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +13,9 @@ import java.util.Map;
 public class FrameworkCoreProperties {
     @Setter
     private boolean enable = true;
+
+    @Setter
+    private String wasIdName;
 
     private final Pipeline pipeline = new Pipeline();
 

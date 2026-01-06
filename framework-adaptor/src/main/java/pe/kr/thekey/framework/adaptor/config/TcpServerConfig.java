@@ -1,11 +1,12 @@
 package pe.kr.thekey.framework.adaptor.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.ip.tcp.connection.AbstractServerConnectionFactory;
 import org.springframework.integration.ip.tcp.connection.TcpNioClientConnectionFactory;
 import org.springframework.integration.ip.tcp.connection.TcpNioServerConnectionFactory;
@@ -14,16 +15,11 @@ import org.springframework.messaging.MessageChannel;
 import pe.kr.thekey.framework.adaptor.service.AsyncTcpSerializer;
 import pe.kr.thekey.framework.adaptor.util.AdaptorProperties;
 
-import java.util.Set;
-
-@RequiredArgsConstructor
 @AutoConfiguration
-@EnableConfigurationProperties({AdaptorProperties.class})
-@ConditionalOnProperty(prefix="thekey.framework.adaptor", name="enable", havingValue="true", matchIfMissing=true)
-public class AdaptorConfig {
+@EnableIntegration
+@RequiredArgsConstructor
+public class TcpServerConfig {
     private final AdaptorProperties properties;
-
-
 
     @Bean
     public AsyncTcpSerializer serializer() {
@@ -31,8 +27,8 @@ public class AdaptorConfig {
     }
 
     @Bean
-    public TcpNioClientConnectionFactory clientConnectionFactory(AdaptorProperties.HostInfo hostInfo) {
-        TcpNioClientConnectionFactory connectionFactory = new TcpNioClientConnectionFactory(hostInfo.getIp(), hostInfo.getPort());
+    public TcpNioClientConnectionFactory clientConnectionFactory() {
+        TcpNioClientConnectionFactory connectionFactory = new TcpNioClientConnectionFactory();
         connectionFactory.setSerializer(serializer());
         connectionFactory.setDeserializer(serializer());
         connectionFactory.setSingleUse(true);
@@ -40,8 +36,8 @@ public class AdaptorConfig {
     }
 
     @Bean
-    public AbstractServerConnectionFactory connectionFactory(AsyncTcpSerializer serializer, AdaptorProperties.AsyncReceiveInfo receiveInfo) {
-        TcpNioServerConnectionFactory connectionFactory = new TcpNioServerConnectionFactory(receiveInfo.getPort());
+    public AbstractServerConnectionFactory connectionFactory(AsyncTcpSerializer serializer) {
+        TcpNioServerConnectionFactory connectionFactory = new TcpNioServerConnectionFactory(port);
         connectionFactory.setSerializer(serializer);
         connectionFactory.setDeserializer(serializer);
         connectionFactory.setSingleUse(true);
