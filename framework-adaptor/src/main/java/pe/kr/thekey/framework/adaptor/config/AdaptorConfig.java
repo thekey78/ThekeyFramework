@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.ip.tcp.connection.AbstractClientConnectionFactory;
 import org.springframework.integration.ip.tcp.connection.AbstractServerConnectionFactory;
 import org.springframework.integration.ip.tcp.connection.TcpNioClientConnectionFactory;
 import org.springframework.integration.ip.tcp.connection.TcpNioServerConnectionFactory;
@@ -14,7 +15,7 @@ import org.springframework.messaging.MessageChannel;
 import pe.kr.thekey.framework.adaptor.service.AsyncTcpSerializer;
 import pe.kr.thekey.framework.adaptor.util.AdaptorProperties;
 
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @AutoConfiguration
@@ -31,16 +32,46 @@ public class AdaptorConfig {
     }
 
     @Bean
-    public TcpNioClientConnectionFactory clientConnectionFactory(AdaptorProperties.HostInfo hostInfo) {
-        TcpNioClientConnectionFactory connectionFactory = new TcpNioClientConnectionFactory(hostInfo.getIp(), hostInfo.getPort());
-        connectionFactory.setSerializer(serializer());
-        connectionFactory.setDeserializer(serializer());
+    public Map<String, List<AbstractClientConnectionFactory>> clientConnectionFactoryMap(AdaptorProperties properties) {
+        Map<String, List<AbstractClientConnectionFactory>> connectionFactoryMap = new HashMap<>();
+        properties.getConfigs().forEach((k,v) -> {
+            connectionFactoryMap.put(k, clientConnectionFactories(v.getHosts(), serializer()));
+        });
+
+        return connectionFactoryMap;
+    }
+
+    @Bean
+    public List<AbstractClientConnectionFactory> clientConnectionFactories(List<AdaptorProperties.HostInfo> hosts, AsyncTcpSerializer serializer) {
+        List<AbstractClientConnectionFactory> connectionFactoryList = new ArrayList<>();
+        hosts.forEach(host -> {
+            connectionFactoryList.add(makeTcpNioClientConnectionFactory(host, serializer));
+        });
+        return connectionFactoryList;
+    }
+
+    @Bean
+    public AbstractClientConnectionFactory makeTcpNioClientConnectionFactory(AdaptorProperties.HostInfo host, AsyncTcpSerializer serializer) {
+        TcpNioClientConnectionFactory connectionFactory = new TcpNioClientConnectionFactory(host.getIp(), host.getPort());
+        connectionFactory.setSerializer(serializer);
+        connectionFactory.setDeserializer(serializer);
         connectionFactory.setSingleUse(true);
         return connectionFactory;
     }
 
+
     @Bean
-    public AbstractServerConnectionFactory connectionFactory(AsyncTcpSerializer serializer, AdaptorProperties.AsyncReceiveInfo receiveInfo) {
+    public Map<String, AbstractServerConnectionFactory> serverConnectionFactoryMap(AdaptorProperties properties) {
+        Map<String, AbstractServerConnectionFactory> connectionFactoryMap = new HashMap<>();
+        properties.getConfigs().forEach((k,v) -> {
+            connectionFactoryMap.put(k, serverConnectionFactory(serializer(), v.getAsyncReceiveInfo()));
+        });
+
+        return connectionFactoryMap;
+    }
+
+    @Bean
+    public AbstractServerConnectionFactory serverConnectionFactory(AsyncTcpSerializer serializer, AdaptorProperties.AsyncReceiveInfo receiveInfo) {
         TcpNioServerConnectionFactory connectionFactory = new TcpNioServerConnectionFactory(receiveInfo.getPort());
         connectionFactory.setSerializer(serializer);
         connectionFactory.setDeserializer(serializer);
