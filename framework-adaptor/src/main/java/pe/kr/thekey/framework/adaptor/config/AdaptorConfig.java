@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.ftp.inbound.FtpInboundFileSynchronizer;
@@ -23,7 +26,9 @@ import org.springframework.integration.ftp.session.DefaultFtpSessionFactory;
 import org.springframework.integration.sftp.inbound.SftpInboundFileSynchronizer;
 import org.springframework.integration.sftp.inbound.SftpInboundFileSynchronizingMessageSource;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import pe.kr.thekey.framework.adaptor.service.AsyncTcpSerializer;
 import pe.kr.thekey.framework.adaptor.util.AdaptorProperties;
@@ -255,12 +260,12 @@ public class AdaptorConfig {
         return synchronizer;
     }
 
-    @Bean
+    @Bean("inboundChannel")
     public MessageChannel inboundChannel() {
         return new DirectChannel();
     }
 
-    @Bean
+    @Bean("replyChannel")
     public MessageChannel replyChannel() {
         return new DirectChannel();
     }
@@ -274,15 +279,24 @@ public class AdaptorConfig {
 
         serverConnectionFactoryMap.forEach((key, connectionFactory) -> {
             TcpInboundGateway tcpInboundGateway = tcpInboundGateway(connectionFactory, inboundChannel, replyChannel);
-            log.debug("Registered TCP inbound gateway for key: {}", key);
-            ((ConfigurableApplicationContext) context).getBeanFactory().registerSingleton(key + tcpInboundGateway.getClass().getName(), tcpInboundGateway);
+
+            log.debug("Registered TCP inbound gateway for key: {}", key + "TcpGateway");
+            ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) context).getBeanFactory();
+
+            // 게이트웨이를 빈으로 등록하고 초기화 및 시작 처리를 합니다.
+            beanFactory.registerSingleton(key + "TcpGateway", tcpInboundGateway);
+
+            tcpInboundGateway.setBeanFactory(beanFactory);
+            tcpInboundGateway.afterPropertiesSet();
+            tcpInboundGateway.start(); // 게이트웨이 활성화
+
             gatewayMap.put(key, tcpInboundGateway);
         });
 
         return gatewayMap;
     }
 
-    public TcpInboundGateway tcpInboundGateway(AbstractServerConnectionFactory connectionFactory,
+    private TcpInboundGateway tcpInboundGateway(AbstractServerConnectionFactory connectionFactory,
                                                MessageChannel inboundChannel,
                                                MessageChannel replyChannel) {
         TcpInboundGateway tcpInboundGateway = new TcpInboundGateway();
@@ -290,5 +304,41 @@ public class AdaptorConfig {
         tcpInboundGateway.setRequestChannel(inboundChannel);
         tcpInboundGateway.setReplyChannel(replyChannel);
         return tcpInboundGateway;
+    }
+
+    /**
+     * inboundChannel로 들어오는 메시지를 처리할 구독자(Subscriber)를 정의합니다.
+     * 이 핸들러가 있어야 "Dispatcher has no subscribers" 에러가 발생하지 않습니다.
+     */
+    @ServiceActivator(inputChannel = "inboundChannel")
+    public byte[] handleInboundMessage(Message<byte[]> message) {
+        log.info("Received message from TCP: {}", new String(message.getPayload()));
+        // 비즈니스 로직을 여기에 구현하세요.
+        // Gateway를 사용 중이므로 응답이 필요하다면 리턴 타입을 String이나 Message로 변경하여 반환하면 replyChannel로 전달됩니다.
+        return message.getPayload();
+    }
+
+    /**
+     * "Dispatcher has no subscribers" 에러를 해결하기 위해
+     * 수신된 메시지를 처리할 핸들러를 등록합니다.
+     * inputChannel의 이름은 실제 사용 중인 채널 ID(예: "inboundChannel")와 일치해야 합니다.
+     */
+    @Bean
+    @ServiceActivator(inputChannel = "inboundChannel") // 에러가 발생하는 채널 이름을 지정하세요
+    public MessageHandler messageHandler() {
+        return message -> {
+            // 메시지 처리 로직을 구현합니다.
+            byte[] payload = (byte[]) message.getPayload();
+            System.out.println("수신된 메시지: " + new String(payload));
+
+            // 필요 시 비즈니스 서비스 호출
+            // myService.process(payload);
+        };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public RestTemplateBuilder restTemplateBuilder() {
+        return new RestTemplateBuilder();
     }
 }

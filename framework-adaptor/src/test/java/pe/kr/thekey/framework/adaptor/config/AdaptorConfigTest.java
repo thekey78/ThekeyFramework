@@ -213,6 +213,10 @@ public class AdaptorConfigTest {
         ) {
             log.debug("Connected to server: {} {}", socket.getInetAddress(), socket.getPort());
             outputStream.write("Test data".getBytes());
+            outputStream.flush();
+            // 데이터 송신 완료를 알림 (서버의 read()가 -1 또는 0을 반환할 수 있게 함)
+            socket.shutdownOutput();
+
             log.debug("Sent data to server: Test data");
             byte[] readData = new byte[1024];
             int bytesRead = inputStream.read(readData);
