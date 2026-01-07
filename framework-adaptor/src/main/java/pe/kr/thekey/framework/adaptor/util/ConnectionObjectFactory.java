@@ -5,6 +5,7 @@ public class ConnectionObjectFactory {
         return switch (connectType) {
             case SOCKET -> new SocketConnectionObject(hostInfo);
             case HTTP -> new HttpConnectionObject(hostInfo, dataType);
+            default -> null;
         };
     }
 }

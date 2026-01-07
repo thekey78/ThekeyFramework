@@ -6,3 +6,4 @@ spring:
       - classpath:application-log.yaml
       - classpath:application-core.yaml
       - classpath:application-was.yaml
+      - classpath:application-adaptor.yaml

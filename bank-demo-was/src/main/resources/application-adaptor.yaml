@@ -1,0 +1,41 @@
+thekey:
+  framework:
+    adaptor:
+      enable: true
+      configs:
+        MCI:
+          enable: true
+          failover: true
+          loadBalance: true
+          permanent: true
+          async: false
+          data-type: binary
+          connectType: SOCKET
+          hosts:
+            - ip: 192.168.1.101
+              port: 8888
+              connectionTimeout: 5000
+              read-timeout: 60000
+            - ip: 192.168.1.102
+              port: 8888
+              connectionTimeout: 5000
+              read-timeout: 60000
+        EAI:
+          enable: true
+          failover: false
+          loadBalance: false
+          permanent: false
+          async: true
+          data-type: binary
+          connectType: SOCKET
+          hosts:
+            - port: 8888
+              connectionTimeout: 5000
+              read-timeout: 60000
+              ip: 192.168.1.110
+          async-receive-info:
+            enable: true
+            tcp-ip:
+              port: 8088
+              read-timeout: 60000
+

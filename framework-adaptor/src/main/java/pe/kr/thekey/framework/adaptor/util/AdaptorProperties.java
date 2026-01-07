@@ -18,7 +18,9 @@ public class AdaptorProperties {
     @Setter
     private Map<String, AdaptorConfigInfo> configs = new ConcurrentHashMap<>();
 
-    @Data
+    @Getter
+    @Setter
+    @ToString
     public static class AdaptorConfigInfo {
         private boolean enable;
         private boolean failover;
@@ -28,11 +30,12 @@ public class AdaptorProperties {
         private DataType dataType;
         private ConnectType connectType;
         private List<HostInfo> hosts = new ArrayList<>();
-        private int receivePort;
         private AsyncReceiveInfo asyncReceiveInfo;
     }
 
-    @Data
+    @Getter
+    @Setter
+    @ToString
     public static class HostInfo {
         private String url;
         private String ip;
@@ -42,19 +45,93 @@ public class AdaptorProperties {
         private int order = 0;
     }
 
-    @Data
+    @Getter
+    @Setter
+    @ToString
     public static class AsyncReceiveInfo {
         private boolean enable;
-        private String receiveWasId;
         private ConnectType receiveConnectType;
-        private String receiveWasUrl;
+        private TcpIpInfo tcpIp;
+        private FtpInfo ftp;
+        private SftpInfo sftp;
+        private GrpcInfo grpc;
+        private KafkaInfo kafka;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class TcpIpInfo {
+        private String host;
         private int port;
         private int readTimeout = 60000;
-        private int order = 0;
+        private String receiveWasId;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class FtpInfo {
+        private String host;
+        private int port = 21;
+        private String username;
+        private String password;
+        private String remoteDirectory;
+        private String localDirectory;
+        private int connectionTimeout = 30000;
+        private int dataTimeout = 60000;
+        private boolean passiveMode = true;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class SftpInfo {
+        private String host;
+        private int port = 22;
+        private String username;
+        private String password;
+        private String privateKey;
+        private String privateKeyPassphrase;
+        private String remoteDirectory;
+        private String localDirectory;
+        private int connectionTimeout = 30000;
+        private int sessionTimeout = 60000;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class GrpcInfo {
+        private String host;
+        private int port;
+        private boolean useTls = false;
+        private String certChainFile;
+        private String privateKeyFile;
+        private String trustCertCollection;
+        private int maxInboundMessageSize = 4194304; // 4MB
+        private int keepAliveTime = 300; // seconds
+        private int keepAliveTimeout = 20; // seconds
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class KafkaInfo {
+        private String bootstrapServers;
+        private String topic;
+        private String groupId;
+        private String consumerGroup;
+        private int sessionTimeout = 30000;
+        private int pollTimeout = 1000;
+        private String keyDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
+        private String valueDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
+        private String autoOffsetReset = "latest";
+        private boolean enableAutoCommit = true;
     }
 
     public enum DataType {
-        XML, CSV, FIXED, DELIMITED, JSON;
+        XML, CSV, BINARY, DELIMITED, JSON;
 
         public static boolean useMessenger(@NonNull DataType dataType) {
             return dataType != JSON;
@@ -66,7 +143,7 @@ public class AdaptorProperties {
     }
 
     public enum ConnectType {
-        SOCKET, HTTP;
+        SOCKET, FTP, SFTP, GRPC, KAFKA, HTTP
     }
 }
 

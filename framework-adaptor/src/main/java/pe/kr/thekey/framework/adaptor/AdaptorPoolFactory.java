@@ -1,7 +1,6 @@
 package pe.kr.thekey.framework.adaptor;
 
 import lombok.Getter;
-import pe.kr.thekey.framework.adaptor.basic.DefaultAdaptorPool;
 import pe.kr.thekey.framework.adaptor.util.AdaptorProperties;
 
 public class AdaptorPoolFactory {

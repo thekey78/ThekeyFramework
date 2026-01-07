@@ -60,6 +60,11 @@
             <artifactId>framework-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>pe.kr.thekey78</groupId>
+            <artifactId>framework-adaptor</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
