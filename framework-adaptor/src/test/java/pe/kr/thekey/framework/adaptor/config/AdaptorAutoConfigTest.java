@@ -148,7 +148,6 @@ public class AdaptorAutoConfigTest {
             byte[] content = "Test data".getBytes();
             byte[] dataToSend = new byte[content.length + 1];
             System.arraycopy(content, 0, dataToSend, 0, content.length);
-            dataToSend[content.length] = (byte)0x03;
 
             outputStream.write(dataToSend);
             outputStream.flush();
@@ -158,7 +157,12 @@ public class AdaptorAutoConfigTest {
             byte[] readData = new byte[1024];
             int bytesRead = inputStream.read(readData);
             assertTrue(bytesRead > 0, "Expected data to be received from server");
-            assertEquals("Test data", new String(readData, 0, bytesRead), "Received data should match sent data");
+            assertEquals("Test data", new String(readData, 0, bytesRead-1), "Received data should match sent data");
         }
+    }
+
+    @Test
+    public void testByteCode() {
+        log.debug("{}, {}", (byte) -1, (byte) 255);
     }
 }

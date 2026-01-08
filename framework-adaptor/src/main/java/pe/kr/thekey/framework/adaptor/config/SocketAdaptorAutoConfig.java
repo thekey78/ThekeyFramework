@@ -54,13 +54,13 @@ public class SocketAdaptorAutoConfig {
     @Bean
     @ConditionalOnMissingBean
     public Serializer<?> serializer() {
-        return new ByteArraySingleTerminatorSerializer((byte)0x03);
+        return new ByteArraySingleTerminatorSerializer((byte)0x00);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public Deserializer<?> deserializer() {
-        return new ByteArraySingleTerminatorSerializer((byte)0x03);
+        return new ByteArraySingleTerminatorSerializer((byte)0x00);
     }
 
     @Bean
