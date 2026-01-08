@@ -29,6 +29,7 @@ public class AdaptorProperties {
         private boolean async;
         private DataType dataType;
         private ConnectType connectType;
+        private String encoding = "UTF-8";
         private List<HostInfo> hosts = new ArrayList<>();
         private AsyncReceiveInfo asyncReceiveInfo;
     }

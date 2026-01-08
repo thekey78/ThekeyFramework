@@ -3,16 +3,13 @@ package pe.kr.thekey.framework.adaptor.util;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.restclient.autoconfigure.service.HttpServiceClientAutoConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.http.HttpClient;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.time.Duration;
 
 @Slf4j
@@ -25,6 +22,9 @@ public class HttpConnectionObject implements ConnectionObject {
     private final AdaptorProperties.DataType dataType;
 
     @Getter
+    private final String encoding;
+
+    @Getter
     protected RestClient connection;
 
     protected byte[] response;
@@ -34,13 +34,9 @@ public class HttpConnectionObject implements ConnectionObject {
         if (connection != null) {
             return;
         }
-        HttpComponentsClientHttpRequestFactory factory =
-                new HttpComponentsClientHttpRequestFactory();
-        factory.setReadTimeout(hostInfo.getReadTimeout());
-        factory.setConnectionRequestTimeout(hostInfo.getConnectionTimeout());
-
+        
         connection = RestClient.builder()
-                .requestFactory(factory)
+                .requestFactory(new HttpComponentsClientHttpRequestFactory())
                 .build();
     }
 
@@ -61,21 +57,29 @@ public class HttpConnectionObject implements ConnectionObject {
     @Override
     public void write(String uuid, String channelId, byte[] data) throws IOException {
         if (connection == null) {
-            throw new IllegalStateException("Socket is not connected");
+            connect();
         }
 
         writeLog(uuid, channelId, data);
+        
+        MediaType contentType = switch (dataType) {
+            case JSON -> MediaType.APPLICATION_JSON;
+            case XML -> MediaType.APPLICATION_XML;
+            default -> MediaType.TEXT_PLAIN;
+        };
+        
+        // 인코딩 적용을 위해 Charset 추가
+        try {
+            Charset charset = Charset.forName(encoding);
+            contentType = new MediaType(contentType, charset);
+        } catch (UnsupportedCharsetException e) {
+            log.warn("Unsupported encoding: {}, using default", encoding);
+        }
+
         response = connection.post()
                 .uri(hostInfo.getUrl())
-                .contentLength(data.length)
-                .contentType(switch (dataType){
-                    case JSON -> MediaType.APPLICATION_JSON;
-                    case XML -> MediaType.APPLICATION_XML;
-                    default -> MediaType.TEXT_PLAIN;
-                })
-                .body(outputStream -> {
-                    outputStream.write(data);
-                })
+                .contentType(contentType)
+                .body(data)
                 .retrieve()
                 .body(byte[].class);
     }
@@ -91,6 +95,11 @@ public class HttpConnectionObject implements ConnectionObject {
     }
 
     protected void writeLog(String uuid, String channelId, byte[] data) {
-        log.info("Writing data to socket for UUID: {}, Channel: {}, Data: {}", uuid, channelId, new String(data));
+        try {
+            log.info("Writing data to HTTP for UUID: {}, Channel: {}, Data: {}", uuid, channelId, new String(data, encoding));
+        } catch (java.io.UnsupportedEncodingException e) {
+            log.error("Unsupported encoding: {}", encoding, e);
+            log.info("Writing data to HTTP for UUID: {}, Channel: {}, Data: {}", uuid, channelId, new String(data));
+        }
     }
 }

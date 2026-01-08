@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import pe.kr.thekey.framework.adaptor.AdaptorPool;
 import pe.kr.thekey.framework.adaptor.exception.ExternalException;
+import pe.kr.thekey.framework.adaptor.util.AdaptorConverter;
 import pe.kr.thekey.framework.adaptor.util.ConnectionObject;
 import pe.kr.thekey.framework.adaptor.util.ConnectionObjectFactory;
 import pe.kr.thekey.framework.core.config.ErrorCode;
@@ -30,6 +31,10 @@ public class DefaultAdaptorPool implements AdaptorPool {
     private DataType dataType;
     @Getter
     private ConnectType connectType;
+    @Getter
+    private String encoding;
+
+    private final AdaptorConverter converter;
 
 
     private List<HostInfo> hosts;
@@ -38,7 +43,8 @@ public class DefaultAdaptorPool implements AdaptorPool {
 
     protected AtomicInteger currentIndex = new AtomicInteger(0);
 
-    public DefaultAdaptorPool(AdaptorConfigInfo configInfo) {
+    public DefaultAdaptorPool(AdaptorConfigInfo configInfo, AdaptorConverter converter) {
+        this.converter = converter;
         reload(configInfo);
     }
 
@@ -47,9 +53,13 @@ public class DefaultAdaptorPool implements AdaptorPool {
         this.failover = configInfo.isFailover();
         this.loadBalance = configInfo.isLoadBalance();
         this.dataType = configInfo.getDataType();
+        this.encoding = configInfo.getEncoding();
         this.hosts = configInfo.getHosts();
         this.permanent = configInfo.isPermanent();
         this.async = configInfo.isAsync();
+        this.dataType = configInfo.getDataType();
+        this.connectType = configInfo.getConnectType();
+        this.encoding = configInfo.getEncoding();
         init();
     }
 
@@ -60,7 +70,7 @@ public class DefaultAdaptorPool implements AdaptorPool {
     @PostConstruct
     protected void makeAdaptorPool() {
         for (HostInfo host : this.hosts) {
-            ConnectionObject socketConnectionObject = ConnectionObjectFactory.createConnectionObject(connectType, dataType, host);
+            ConnectionObject socketConnectionObject = ConnectionObjectFactory.createConnectionObject(connectType, dataType, encoding, host);
             connect(isPermanent(), socketConnectionObject);
             connections.add(socketConnectionObject);
         }
@@ -73,8 +83,7 @@ public class DefaultAdaptorPool implements AdaptorPool {
         connect(!isPermanent(), connectionObject);
         // Executes transactional I/O; disconnects if not permanent
         try {
-            connectionObject.writeRead(uuid, channelId, data);
-            return connectionObject.read(1024 * 8);
+            return connectionObject.writeRead(uuid, channelId, data);
         } catch (IOException e) {
             log.error(ErrorCode.FEX013.getMessage(), e);
             throw new ExternalException(ErrorCode.FEX013, e);
@@ -86,6 +95,18 @@ public class DefaultAdaptorPool implements AdaptorPool {
                     log.error("Failed to disconnect adaptor connection", e);
                 }
             }
+        }
+    }
+
+    @Override
+    public <T> T execute(String uuid, String channelId, Object data, Class<T> responseType) throws ExternalException {
+        try {
+            byte[] requestData = converter.convertToBytes(data, dataType, encoding);
+            byte[] responseData = execute(uuid, channelId, requestData);
+            return (T) converter.convertFromBytes(responseData, responseType, dataType, encoding);
+        } catch (Exception e) {
+            log.error("Failed to execute adaptor with conversion", e);
+            throw new ExternalException(ErrorCode.FEX013, e);
         }
     }
 

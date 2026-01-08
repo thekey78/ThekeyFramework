@@ -16,6 +16,9 @@ public class SocketConnectionObject implements ConnectionObject {
     private final AdaptorProperties.HostInfo hostInfo;
 
     @Getter
+    private final String encoding;
+
+    @Getter
     protected SocketChannel socket;
 
     @Override
@@ -79,6 +82,11 @@ public class SocketConnectionObject implements ConnectionObject {
     }
 
     protected void writeLog(String uuid, String channelId, byte[] data) {
-        log.info("Writing data to socket for UUID: {}, Channel: {}, Data: {}", uuid, channelId, new String(data));
+        try {
+            log.info("Writing data to socket for UUID: {}, Channel: {}, Data: {}", uuid, channelId, new String(data, encoding));
+        } catch (java.io.UnsupportedEncodingException e) {
+            log.error("Unsupported encoding: {}", encoding, e);
+            log.info("Writing data to socket for UUID: {}, Channel: {}, Data: {}", uuid, channelId, new String(data));
+        }
     }
 }

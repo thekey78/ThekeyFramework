@@ -6,7 +6,6 @@ logging:
     root: info
     web: info
     pe.kr.thekey.framework: debug
-    org.spring.integration: debug
 thekey:
   framework:
     adaptor:
@@ -18,7 +17,7 @@ thekey:
           loadBalance: true
           permanent: true
           async: false
-          data-type: fixed_length
+          data-type: BINARY
           connectType: SOCKET
           hosts:
             - ip: 192.168.1.101
@@ -35,7 +34,7 @@ thekey:
           loadBalance: false
           permanent: false
           async: true
-          data-type: fixed_length
+          data-type: BINARY
           connectType: SOCKET
           hosts:
             - port: 8888
