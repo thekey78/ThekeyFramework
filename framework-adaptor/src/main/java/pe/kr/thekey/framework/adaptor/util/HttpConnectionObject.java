@@ -10,7 +10,6 @@ import org.springframework.web.client.RestClient;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor

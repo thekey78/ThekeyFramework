@@ -1,5 +1,7 @@
 package pe.kr.thekey.framework.core.config;
 
+import lombok.Getter;
+
 public enum ErrorCode {
     FEX001("시스템구분 코드가 입력되지 않았습니다. I(내부), E(외부)에 대한 코드를 설정하세요."),
     FEX002("잘못된 시스템 구분 코드입니다.I(내부), E(외부)에 대한 코드를 설정하세요."),
@@ -20,7 +22,7 @@ public enum ErrorCode {
     FEX019("데이터 형변환 오류. ${0}")
     ;
 
-
+    @Getter
     private final String message;
     ErrorCode(String message) {
         this.message = message;
@@ -28,10 +30,5 @@ public enum ErrorCode {
 
     public String getCode() {
         return name();
-    }
-
-
-    public String getMessage() {
-        return message;
     }
 }

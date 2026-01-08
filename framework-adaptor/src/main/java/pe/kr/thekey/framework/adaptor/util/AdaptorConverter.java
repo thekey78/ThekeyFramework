@@ -56,24 +56,25 @@ public class AdaptorConverter {
         }
 
         String content = new String(data, Charset.forName(encoding));
-        switch (dataType) {
-            case JSON:
-                return objectMapper.readValue(content, targetClass);
-            case XML:
-                return xmlMapper.readValue(content, targetClass);
-            case DELIMITED:
+        return switch (dataType) {
+            case JSON -> objectMapper.readValue(content, targetClass);
+            case XML -> xmlMapper.readValue(content, targetClass);
+            case DELIMITED -> {
                 if (messengerService != null) {
-                    return messengerService.parse(targetClass.getSimpleName(), content);
+                    yield messengerService.parse(targetClass.getSimpleName(), content);
                 }
-                return content;
-            case BINARY:
+                yield content;
+            }
+            case BINARY -> {
                 // Binary의 경우 Class 타입에 따라 변환이 필요할 수 있으나 기본은 String 처리
                 if (targetClass == String.class) {
-                    return content;
+                    yield content;
                 }
-                return content; // 임시
-            default:
-                return content;
-        }
+                // TODO Class 타입에 따라 변환 필요
+                yield content;
+            }
+            // TODO Class 타입에 따라 변환 필요
+            default -> content;
+        };
     }
 }

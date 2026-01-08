@@ -20,10 +20,8 @@ import org.springframework.integration.ip.tcp.connection.TcpNioClientConnectionF
 import org.springframework.integration.ip.tcp.connection.TcpNioServerConnectionFactory;
 import org.springframework.integration.ip.tcp.inbound.TcpInboundGateway;
 import org.springframework.integration.ip.tcp.serializer.ByteArraySingleTerminatorSerializer;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessagingException;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import pe.kr.thekey.framework.adaptor.service.MessageService;
 import pe.kr.thekey.framework.adaptor.util.AdaptorProperties;
@@ -103,9 +101,7 @@ public class SocketAdaptorAutoConfig {
     @ConditionalOnMissingBean
     @ServiceActivator(inputChannel = "inboundChannel")
     public MessageHandler inboundHandler() {
-        return message -> {
-            log.info("Received message: {}", message.getPayload());
-        };
+        return message -> log.info("Received message: {}", message.getPayload());
     }
 
     @Bean("replyHandler")

@@ -25,8 +25,6 @@ public class AdaptorPoolFactory {
     }
 
     protected void makeAdaptorPool() {
-        properties.getConfigs().forEach((key, config) -> {
-            poolMap.put(key, new DefaultAdaptorPool(config, converter));
-        });
+        properties.getConfigs().forEach((key, config) -> poolMap.put(key, new DefaultAdaptorPool(config, converter)));
     }
 }
